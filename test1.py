@@ -58,3 +58,6 @@ wind_speed.head()
 chi_crime_per_month=chicago_crime.groupby(chicago_crime.Date.str[3:10]).count()
 chi_crime_per_month=chi_crime_per_month[['ID']].rename(columns={'ID':'crime count'})
 print(chi_crime_per_month.head(20))
+
+
+
