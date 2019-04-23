@@ -18,7 +18,7 @@ def read_indata(path):
 
 ## generate new column year for every data
 
-def generate_year(df, colname):
+def generate_year_month(df, colname, string):
     '''
 
     :param df: dataframe we want to add column year and month
@@ -27,7 +27,19 @@ def generate_year(df, colname):
     '''
     df['year'] = pd.DatetimeIndex(df[colname]).year
     df['month'] = pd.DatetimeIndex(df[colname]).month
+    df['indextype'] = str(string)
     return df
+
+### append all weather index by country
+def append_weather_index(dflist):
+    weather_all = dflist[0]
+    for i in range(len(dflist) - 1):
+        weather_all = weather_all.append(dflist[i+1])
+
+    return weather_all
+
+
+
 
 
 
@@ -48,11 +60,39 @@ if __name__ == "__main__":
     chicago_crime = read_indata('./Chicago_crime_2012-2017.csv')
     airpollution = read_indata('./pollution_us_2000_2016.csv')
 
-
     ### ADD YEAR AND MONTH COLUMN TO DATA
     df_list = [Humiditiy, Pressure, Temperature, weather_description, wind_direction,
                wind_speed]
-    for data in df_list:
-        data = generate_year_month(data, 'datetime')
+    stringlist = ['Humiditiy', 'Pressure', 'Temperature', 'weather_description', 'wind_direction',
+               'wind_speed']
+
+    for index in range(len(df_list)):
+        df = generate_year_month(df_list[index], 'datetime', stringlist[index])
+
+    weather_all = append_weather_index(df_list)
+
+
 
     airpollution = generate_year_month(airpollution, 'Date Local')
+
+    chicago_crime['year'] = chicago_crime.Date.str[6:10]
+    chicago_crime['month'] = chicago_crime.Date.str[0:2]
+
+    ## count chicago crime
+    chi_crime_per_month = chicago_crime[['ID', 'year', 'month']].groupby(['year', 'month']).size()
+
+    #print head
+    city_attributes.head()
+    Humiditiy.head()
+
+    Pressure.head()
+    Temperature.head()
+    weather_description.head()
+    wind_direction.head()
+    wind_speed.head()
+    airpollution.head()
+
+    list(Humiditiy.columns.values)
+    list(Pressure.columns.values)
+    list(chicago_crime.columns.values)
+
