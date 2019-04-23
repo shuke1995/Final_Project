@@ -21,6 +21,7 @@ wind_direction = pd.read_csv('./historical-hourly-weather-data/wind_direction.cs
 wind_speed = pd.read_csv('./historical-hourly-weather-data/wind_speed.csv')
 
 chicago_crime = pd.read_csv('./Chicago_crime_2012-2017.csv')
+chicago_crime=chicago_crime[chicago_crime.Date.str[6:10] !='2018']
 
 airpollution = pd.read_csv('./pollution_us_2000_2016.csv')
 
@@ -49,3 +50,11 @@ wind_direction.head()
 wind_speed.head()
 
 
+#Weather and crime
+#Compute the crime every year each month
+#print(chicago_crime.columns.values)
+#print(chicago_crime[['Date']].head(10))
+#print(chicago_crime.Date.str[3:10])
+chi_crime_per_month=chicago_crime.groupby(chicago_crime.Date.str[3:10]).count()
+chi_crime_per_month=chi_crime_per_month[['ID']].rename(columns={'ID':'crime count'})
+print(chi_crime_per_month.head(20))
