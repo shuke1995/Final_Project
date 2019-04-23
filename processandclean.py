@@ -33,6 +33,7 @@ def generate_year(df, colname):
 
 
 
+
 #### Soluruib
 
 if __name__ == "__main__":
@@ -46,3 +47,12 @@ if __name__ == "__main__":
     wind_speed = read_indata('./historical-hourly-weather-data/wind_speed.csv')
     chicago_crime = read_indata('./Chicago_crime_2012-2017.csv')
     airpollution = read_indata('./pollution_us_2000_2016.csv')
+
+
+    ### ADD YEAR AND MONTH COLUMN TO DATA
+    df_list = [Humiditiy, Pressure, Temperature, weather_description, wind_direction,
+               wind_speed]
+    for df in df_list:
+        df = generate_year_month(df, 'datetime')
+
+    airpollution = generate_year_month(airpollution, 'Date Local')
