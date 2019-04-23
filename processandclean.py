@@ -43,9 +43,6 @@ def append_weather_index(dflist):
 
 
 
-
-
-
 #### Soluruib
 
 if __name__ == "__main__":
@@ -90,7 +87,6 @@ if __name__ == "__main__":
     weather_description.head()
     wind_direction.head()
     wind_speed.head()
-    airpollution.head()
 
     list(Humiditiy.columns.values)
     list(Pressure.columns.values)
