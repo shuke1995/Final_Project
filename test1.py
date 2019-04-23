@@ -90,6 +90,7 @@ crime_humidity=pd.merge(chi_humidity_per_month,chi_crime_per_month, on='datetime
 print(crime_humidity.head(20))
 
 
+
 #compute the average temperature
 
 
