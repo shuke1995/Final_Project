@@ -52,7 +52,7 @@ if __name__ == "__main__":
     ### ADD YEAR AND MONTH COLUMN TO DATA
     df_list = [Humiditiy, Pressure, Temperature, weather_description, wind_direction,
                wind_speed]
-    for df in df_list:
-        df = generate_year_month(df, 'datetime')
+    for data in df_list:
+        data = generate_year_month(data, 'datetime')
 
     airpollution = generate_year_month(airpollution, 'Date Local')
