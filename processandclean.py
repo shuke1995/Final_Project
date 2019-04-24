@@ -40,12 +40,14 @@ def append_weather_index(dflist):
 
 
 def get_city(cityname, citycrime, weather_all):
-    city_weather = weather_all[['year', 'month', cityname]]
-    citycrime_per_month = citycrime.groupby(['year', 'month']).count()
+    city_weather = weather_all[['year', 'month', cityname,'indextype']].copy(deep = True)
+    citycrime_per_month = citycrime.groupby(['year', 'month']).size()
     citycrime_per_month = pd.DataFrame(citycrime_per_month.reset_index())
-    citycrime_per_month.columns = ['year', 'month', 'count']
+    citycrime_per_month = citycrime_per_month.rename(columns = {0:'Count'})
     citycrime_per_month[['year', 'month']] = citycrime_per_month[['year', 'month']].astype(int)
+
     city_weather[['year', 'month']] = city_weather[['year', 'month']].astype(int)
+
     crime_weather = pd.merge(city_weather[['year', 'month', cityname, 'indextype']], citycrime_per_month,
                              on=['year', 'month'], how='left')
 
