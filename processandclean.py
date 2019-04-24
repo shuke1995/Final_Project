@@ -75,15 +75,8 @@ def get_city(cityname, citycrime, weather_all):
 
     return crime_weather
 
-#### Humidity comfortable range from 30-60
-def vectorize_humidity(df):
-    if df['Humiditiy'] <= 45:
-        val = 'Low'
-    elif df['Humiditiy'] <= 60:
-        val = 'Normal'
-    elif df['Humiditiy'] > 60:
-        val = 'High'
-    return val
+
+
 
 
 
@@ -100,8 +93,10 @@ if __name__ == "__main__":
     chicago_crime = read_indata('./Chicago_crime_2012-2017.csv')
 
     ### ADD YEAR AND MONTH COLUMN TO DATA
-    df_list = [Humiditiy, Pressure, Temperature, wind_direction,wind_speed]
-    stringlist = ['Humiditiy', 'Pressure', 'Temperature', 'wind_direction', 'wind_speed']
+    df_list = [Humiditiy, Pressure, Temperature, wind_direction,
+               wind_speed]
+    stringlist = ['Humiditiy', 'Pressure', 'Temperature', 'wind_direction',
+               'wind_speed']
 
     for index in range(len(df_list)):
         df = generate_year_month_day(df_list[index], 'datetime', stringlist[index])
@@ -122,35 +117,10 @@ if __name__ == "__main__":
     chi_crime_per_day = chi_crime_per_day.rename(columns = {0:'Count'})
     chi_crime_per_day[['year', 'month', 'day']] = chi_crime_per_day[['year', 'month', 'day']].astype(int)
 
-    crime_weather= merge_dataframe(weather_all,chi_crime_per_day,['year', 'month', 'day'])
-    crime_weather = crime_weather.dropna()
-    crime_weather.iloc[:,4:8]
-    set(crime_weather['Primary Type'])
+    crime_weather=pd.merge(weather_all,chi_crime_per_day,on=['year', 'month', 'day'],how='left')
+    crime_weather.iloc[:,4:10]
 
-    ### humidity versus crime type
-    subset = crime_weather[['year', 'month', 'day','Humiditiy', 'Count','Primary Type']].copy(deep = True)
-    subset['Reltaive Humidity'] = subset.apply(vectorize_humidity, axis = 1)
 
-    ### ignore the time, overall weather and crime
-    crime_count = pd.DataFrame(subset.groupby(['Primary Type','Reltaive Humidity']).agg({'Count':np.sum}))
-    crime_count = crime_count.reset_index()
 
-    crime_count = crime_count.loc[crime_count['Primary Type'].isin(['ASSAULT','BATTERY', 'CRIMINAL DAMAGE','HOMICIDE'])]
-    fig, ax = plt.subplots()
-    N = len(set(crime_count['Primary Type']))
-    HighCounts = tuple(crime_count.loc[crime_count['Reltaive Humidity'] == 'High', 'Count'])
-    NormalCounts = tuple(crime_count.loc[crime_count['Reltaive Humidity'] == 'Normal', 'Count'])
-    LowCounts = tuple(crime_count.loc[crime_count['Reltaive Humidity'] == 'Low', 'Count'])
-    ind = np.arange(N)
-    width = 0.35
 
-    p1 = ax.bar(ind, LowCounts, witdth,color='Yellow')
-    p2 = ax.bar(ind, NormalCounts, witdth, color='Orange', bottom = LowCounts)
-    p3 = ax.bar(ind, HighCounts, witdth, color = 'Red', bottom = NormalCounts)
-    ax.set_ylabel('Count')
-    ax.set_xlabel('Relative Humidity')
-    ax.set_title('Count by Relative Humidity')
-    ax.set_xticks(ind + width / 2.)
-    #ax.set_yticks(np.arange(0, 81, 10))
-    ax.set_xticklabels(('ASSAULT','BATTERY', 'CRIMINAL DAMAGE','HOMICIDE'))
-    plt.show()
+    list(chicago_crime.columns.values)
