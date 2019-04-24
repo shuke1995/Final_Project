@@ -39,8 +39,17 @@ def append_weather_index(dflist):
     return weather_all
 
 
+def get_city(cityname, citycrime, weather_all):
+    city_weather = weather_all[['year', 'month', cityname]]
+    citycrime_per_month = citycrime.groupby(['year', 'month']).count()
+    citycrime_per_month = pd.DataFrame(citycrime_per_month.reset_index())
+    citycrime_per_month.columns = ['year', 'month', 'count']
+    citycrime_per_month[['year', 'month']] = citycrime_per_month[['year', 'month']].astype(int)
+    city_weather[['year', 'month']] = city_weather[['year', 'month']].astype(int)
+    crime_weather = pd.merge(city_weather[['year', 'month', cityname, 'indextype']], citycrime_per_month,
+                             on=['year', 'month'], how='left')
 
-
+    return crime_weather
 
 
 #### Soluruib
@@ -61,14 +70,14 @@ if __name__ == "__main__":
     df_list = [Humiditiy, Pressure, Temperature, weather_description, wind_direction,
                wind_speed]
     stringlist = ['Humiditiy', 'Pressure', 'Temperature', 'weather_description', 'wind_direction',
-               'wind_speed']
+                  'wind_speed']
 
     for index in range(len(df_list)):
         df = generate_year_month(df_list[index], 'datetime', stringlist[index])
 
     weather_all = append_weather_index(df_list)
 
-
+    weather_all.head()
 
     airpollution = generate_year_month(airpollution, 'Date Local')
 
@@ -76,9 +85,13 @@ if __name__ == "__main__":
     chicago_crime['month'] = chicago_crime.Date.str[0:2]
 
     ## count chicago crime
-    chi_crime_per_month = chicago_crime[['ID', 'year', 'month']].groupby(['year', 'month']).size()
+    chi_crime_per_month = chicago_crime.groupby(['year', 'month']).size()
+    chi_crime_per_month = pd.DataFrame(chi_crime_per_month.reset_index())
 
-    #print head
+    chi_crime_per_month.columns = ['year', 'month', 'count']
+    print(chi_crime_per_month.head())
+
+    # print head
     city_attributes.head()
     Humiditiy.head()
 
@@ -87,8 +100,18 @@ if __name__ == "__main__":
     weather_description.head()
     wind_direction.head()
     wind_speed.head()
+    airpollution.head()
 
     list(Humiditiy.columns.values)
     list(Pressure.columns.values)
     list(chicago_crime.columns.values)
 
+    weather_all[['year', 'month', 'Chicago', 'indextype']].head()
+    chi_crime_per_month.head(15)
+    chi_crime_per_month[['year', 'month']] = chi_crime_per_month[['year', 'month']].astype(int)
+    weather_all[['year', 'month']] = weather_all[['year', 'month']].astype(int)
+
+crime_weather = pd.merge(weather_all[['year', 'month', 'Chicago', 'indextype']], chi_crime_per_month,
+                         on=['year', 'month'], how='left')
+
+crime_weather.head()
