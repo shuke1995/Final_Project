@@ -77,6 +77,15 @@ def get_city(cityname, citycrime, weather_all):
 
 
 
+def change_temp(df,col):
+    """
+
+    :param df: a dateframe need to be do this temperature conversion
+    :param col: the column name that need to do this temperature conversion
+    :return: a dataframe after the conversion
+    """
+    df[col]=df[[col]]-273.15
+    return df
 
 
 
@@ -91,6 +100,8 @@ if __name__ == "__main__":
     wind_direction = read_indata('./historical-hourly-weather-data/wind_direction.csv')
     wind_speed = read_indata('./historical-hourly-weather-data/wind_speed.csv')
     chicago_crime = read_indata('./Chicago_crime_2012-2017.csv')
+
+
 
     ### ADD YEAR AND MONTH COLUMN TO DATA
     df_list = [Humiditiy, Pressure, Temperature, wind_direction,
@@ -121,6 +132,14 @@ if __name__ == "__main__":
     crime_weather.iloc[:,4:10]
 
 
+
+    city = Temperature.columns.values
+    for i in city:
+        if i != 'datetime' and i !='year' and i!='month' and i!='day':
+            change_temp(Temperature, i)
+        else:
+            continue
+    print(Temperature.head(10))
 
 
     list(chicago_crime.columns.values)
