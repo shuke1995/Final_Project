@@ -75,7 +75,6 @@ def get_city(cityname, citycrime, weather_all):
 
     return crime_weather
 
-
 #### Humidity comfortable range from 30-60
 def vectorize_humidity(df):
     if df['Humiditiy'] <= 45:
@@ -85,11 +84,6 @@ def vectorize_humidity(df):
     elif df['Humiditiy'] > 60:
         val = 'High'
     return val
-
-
-
-
-
 
 
 
